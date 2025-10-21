@@ -1,5 +1,6 @@
 package com.parrino.riccardo.demo.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.springframework.data.annotation.Id;
@@ -20,5 +21,5 @@ public class Order {
     private Long orderId;
     private Long productId;
     private Integer quantity;
-    private Date date;
+    private LocalDateTime date;
 }

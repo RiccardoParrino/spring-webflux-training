@@ -5,10 +5,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.parrino.riccardo.demo.model.Order;
 import com.parrino.riccardo.demo.service.OrderService;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -18,9 +21,24 @@ public class OrderRestController {
     @Autowired
     private OrderService orderService;
     
-    @GetMapping("/api/order/place")
-    public Mono<Order> placeOrder(@RequestParam Long productId, @RequestParam Integer quantity) {
+    @GetMapping("/api/order/place/{productId}/{quantity}")
+    public Mono<Order> placeOrder(@PathVariable Long productId, @PathVariable Integer quantity) {
         return orderService.placeOrder(productId, quantity);
     }
 
+    @GetMapping("/api/order/findAll")
+    public Flux<Order> findAll() {
+        return orderService
+            .findAll()
+            .skip(3)
+            .take(3);
+    }
+
+    @GetMapping("/api/order/remove/{orderId}")
+    public Mono<ResponseEntity<String>> removeOrder(@PathVariable Long orderId) {
+        return orderService
+            .deleteOrder(orderId)
+                .map(data -> ResponseEntity.ok("Order with order-id: " + orderId + " removed successfully"));
+    }
+    
 }
